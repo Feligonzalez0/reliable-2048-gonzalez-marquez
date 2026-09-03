@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 public class CellTest {
 
     @Test
+    public void testCell(){
+        assertThrows(IllegalArgumentException.class, () -> new Cell(-1));
+    }
+    @Test
     public void testCellPowerOfTwo(){
         assertThrows(IllegalArgumentException.class, () -> new Cell(3));
         assertThrows(IllegalArgumentException.class, () -> new Cell(6));
@@ -42,6 +46,27 @@ public class CellTest {
     }
 
     @Test
+    public void testCanMerge3(){
+        Cell cell1 = new Cell(0);
+        Cell cell2 = new Cell(0);
+        assertFalse(cell1.canMergeWith(cell2));
+    }
+
+    @Test
+    public void testCanMerge4(){
+        Cell cell1 = new Cell(0);
+        Cell cell2 = new Cell(16);
+        assertFalse(cell1.canMergeWith(cell2));
+    }
+
+    @Test
+    public void testCanMerge5(){
+        Cell cell1 = new Cell(16);
+        Cell cell2 = new Cell(0);
+        assertFalse(cell1.canMergeWith(cell2));
+    }
+
+    @Test
     public void testMergeWith(){
         Cell cell1 = new Cell(32);
         Cell cell2 = new Cell(8);
@@ -71,6 +96,20 @@ public class CellTest {
     }
 
     @Test
+    public void testEquals3(){
+        Cell cell1 = new Cell(32);
+        Board board = new Board();
+        assertFalse(cell1.equals(board));
+    }
+
+    @Test
+    public void testEquals4(){
+        Cell cell1 = new Cell(32);
+        Cell cell2 = null;
+        assertFalse(cell1.equals(cell2));
+    }
+
+    @Test
     public void testHashCode(){
         Cell cell1 = new Cell(32);
         Cell cell2 = new Cell(32);
@@ -88,6 +127,8 @@ public class CellTest {
         Cell cell1 = new Cell(0);
         assertEquals(cell1.toString(), ".");
     }
+
+
 
 
 }
