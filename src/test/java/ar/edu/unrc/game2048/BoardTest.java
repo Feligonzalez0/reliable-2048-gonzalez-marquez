@@ -11,7 +11,7 @@ import ar.edu.unrc.game2048.Board.Direction;
 
 public class BoardTest {
     // Helpers
-    private void resetBoard(Board b1){
+    private static void resetBoard(Board b1){
         Cell aux =  new Cell(0);
         for(int i = 0; i < b1.getSize(); i++){
             for(int j = 0 ; j < b1.getSize(); j++){
@@ -357,4 +357,71 @@ public class BoardTest {
 
         assertEquals(0, board.getScore());
     }
+
+    @Test
+    public void testToString(){
+        Board board = new Board();
+        int[][] values = {
+                {2, 4, 2, 4},
+                {4, 2, 4, 2},
+                {2, 4, 2, 4},
+                {4, 2, 8, 8}
+        };
+
+        for (int i = 0; i < board.getSize(); i++){
+            for (int j = 0; j < board.getSize(); j++){
+                board.setCell(i, j, new Cell(values[i][j]));
+            }
+        }
+        String expected =
+                "Score: 0\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|    2|    4|    2|    4|\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|    4|    2|    4|    2|\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|    2|    4|    2|    4|\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|    4|    2|    8|    8|\n" +
+                        "+-----+-----+-----+-----+\n";
+
+        assertEquals(expected, board.toString());
+
+    }
+
+    @Test
+    public void testToString2() {
+        Board board = new Board(4);
+        resetBoard(board);
+        String result = board.toString();
+
+        String expected =
+                "Score: 0\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|     |     |     |     |\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|     |     |     |     |\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|     |     |     |     |\n" +
+                        "+-----+-----+-----+-----+\n" +
+                        "|     |     |     |     |\n" +
+                        "+-----+-----+-----+-----+\n";
+
+        assertEquals(expected, board.toString());
+    }
+
+    @Test
+    public void testToStringBoardPosition() {
+        Board.Position position = new Board.Position(2, 3);
+        assertEquals("(2, 3)", position.toString());
+    }
+
+    @Test
+    public void testHashCode() {
+        Board board1 = new Board(4);
+        Board board2 = new Board(board1);
+        assertEquals(board1.hashCode(), board2.hashCode());
+    }
+
+
 }
