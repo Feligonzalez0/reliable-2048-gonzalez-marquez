@@ -1,6 +1,7 @@
 package ar.edu.unrc.game2048;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -114,7 +115,10 @@ public class CellTest {
     public void testHashCode(){
         Cell cell1 = new Cell(32);
         Cell cell2 = new Cell(32);
+        Cell cell3 = new Cell(64);
+
         assertEquals(cell1.hashCode(), cell2.hashCode());
+        assertNotEquals(cell2.hashCode(), cell3.hashCode());
     }
 
     @Test
