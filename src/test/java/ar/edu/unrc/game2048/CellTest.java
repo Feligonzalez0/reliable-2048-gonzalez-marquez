@@ -95,6 +95,7 @@ public class CellTest {
         assertFalse(cell1.equals(cell2));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals3(){
         Cell cell1 = new Cell(32);

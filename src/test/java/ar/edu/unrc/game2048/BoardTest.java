@@ -1,5 +1,6 @@
 package ar.edu.unrc.game2048;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import ar.edu.unrc.game2048.Board.Direction;
+import ar.edu.unrc.game2048.Board.Position;
 
 public class BoardTest {
     // Helpers
@@ -57,6 +59,12 @@ public class BoardTest {
     public void testGetCell(){
         Board board1 = new Board(3);
         assertThrows(IndexOutOfBoundsException.class,() ->  board1.getCell(5, 5));
+    }
+
+    @Test
+    public void testSetCell(){
+        Board board = new Board(3);
+        assertThrows(IllegalArgumentException.class,() ->  board.setCell(0, 0, null));
     }
 
     @Test
@@ -175,6 +183,38 @@ public class BoardTest {
         assertEquals(board.getCell(3, 3), celda);
     }
 
+    @Test
+    public void testMoveInFullBoard(){
+        Board board = new Board();
+        assertFalse(board.isLosingBoard());
+
+        int[][] values = {
+            {2, 4, 2, 4},
+            {4, 2, 4, 2},
+            {2, 4, 2, 4},
+            {4, 2, 4, 2}
+        };
+
+        for (int i = 0; i < board.getSize(); i++){
+            for (int j = 0; j < board.getSize(); j++){
+                board.setCell(i, j, new Cell(values[i][j]));
+            }
+        }
+
+        assertFalse(board.move(Direction.DOWN));
+        assertFalse(board.move(Direction.RIGHT));
+    }
+
+    @Test
+    public void testBoardSizeOne_HandlesExtraTileSafely() {
+        // Al crear un tablero de 1x1, el constructor llama a addRandomTile() dos veces.
+        // La segunda vez, el tablero ya está lleno, alcanzando el "return false" de addRandomTile().
+        Board board = new Board(1); 
+
+        assertEquals(1, board.getSize());
+        assertTrue(board.isFull());
+    }
+
     // TESTS PARA WINNING Y LOSING BOARD
     @Test
     public void testWinningBoard1(){
@@ -183,7 +223,7 @@ public class BoardTest {
         board.setCell(2, 3,new Cell(Board.WINNING_VALUE));
         assertTrue(board.isWinningBoard());
     }
- 
+    
     @Test
     public void testWinningAndLosingBoard(){
         Board board = new Board();
@@ -306,6 +346,8 @@ public class BoardTest {
     @Test
     public void testIsFull(){
         Board board = new Board();
+        Board board2 = new Board();
+
         assertTrue(board.hasEmptyCells());
 
         for (int i = 0; i < board.getSize(); i++){
@@ -315,6 +357,7 @@ public class BoardTest {
         }
 
         assertTrue(board.isFull());
+        assertFalse(board2.isFull());
     }
 
     @Test
@@ -393,7 +436,6 @@ public class BoardTest {
     public void testToString2() {
         Board board = new Board(4);
         resetBoard(board);
-        String result = board.toString();
 
         String expected =
                 "Score: 0\n" +
@@ -423,5 +465,65 @@ public class BoardTest {
         assertEquals(board1.hashCode(), board2.hashCode());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
+    @Test
+    public void testPositionEquals(){
+        Position pos1 = new Position(0, 0);
+        Position pos2 = new Position(0, 0);
+        Position pos3 = new Position(3, 1);
+        Position pos4 = new Position(3, 4);
 
+        assertTrue(pos1.equals(pos1));
+        assertTrue(pos1.equals(pos2));
+        assertFalse(pos2.equals(pos3));
+
+        assertFalse(pos1.equals(new Board()));
+        assertFalse(pos1.equals(null));
+
+        assertFalse(pos4.equals(pos3));
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    @Test public void testBoardEquals(){
+        Board board = new Board();
+
+        assertTrue(board.equals(board));
+        assertFalse(board.equals(null));
+
+        Board board2 = new Board(4);
+        assertFalse(board2.equals(board));
+
+        Board board3 = new Board(4);
+        resetBoard(board);
+        resetBoard(board3);
+        assertTrue(board.equals(board3));
+
+        assertFalse(board.equals(new Cell(2)));
+    }
+
+    @Test
+    public void testValidatePosition() {
+        int size = 4;
+        Board board = new Board(size);
+        Cell aux = new Cell(2);
+
+        // Validar límites inferiores
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, -1));
+
+        // Validar límites superiores
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(size, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, size));
+
+        // Validar a través del método setCell
+        assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(-1, 0, aux));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(0, size, aux));
+
+        // Validar que las coordenadas correctas no lancen excepción (esquinas)
+        assertDoesNotThrow(() -> {
+            board.getCell(0, 0);
+            board.getCell(size - 1, size - 1);
+            board.setCell(0, 0, aux);
+        });
+    }
 }
