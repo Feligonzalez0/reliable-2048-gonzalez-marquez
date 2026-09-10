@@ -38,8 +38,8 @@ public final class Cell {
         if ((value & (value - 1)) != 0){
             throw new IllegalArgumentException("Cell must be a power of two: " + value);
         }
-
         this.value = value;
+        assert repOK();
     }
     
     /**
@@ -128,4 +128,11 @@ public final class Cell {
         return value == 0 ? "." : String.valueOf(value);
     }
 
+
+    public boolean repOK() {
+        if (value < 0) {
+            return false;
+        }
+        return value == 0 || (value & (value - 1)) == 0;
+    }
 }

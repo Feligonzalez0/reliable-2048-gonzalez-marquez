@@ -64,6 +64,7 @@ public class Board {
         initializeEmpty();
         addRandomTile();
         addRandomTile();
+        assert repOK();
     }
 
     /**
@@ -80,6 +81,7 @@ public class Board {
                 this.grid[r][c] = other.grid[r][c];
             }
         }
+        assert repOK();
     }
 
     /**
@@ -139,6 +141,7 @@ public class Board {
             throw new IllegalArgumentException("Cell cannot be null");
         }
         grid[row][col] = cell;
+        assert repOK();
     }
 
     /**
@@ -262,6 +265,7 @@ public class Board {
         if (moved) {
             addRandomTile(); // Add new random tile after successful move
         }
+        assert repOK();
         return moved;
 
     }
@@ -291,7 +295,6 @@ public class Board {
                 }
                 break;
         }
-        
         return line;
     }
 
@@ -470,5 +473,44 @@ public class Board {
         public String toString() {
             return "(" + row + ", " + col + ")";
         }
+    }
+
+    /**
+     * Checks the representation invariant of this board.
+     * Invariants:
+     * - grid is non-null and square (rows == cols == size)
+     * - size > 0
+     * - all cells in the grid are non-null and individually satisfy their own repOK()
+     * - score >= 0
+     *
+     * @return true if the representation invariant holds, false otherwise
+     */
+    public boolean repOK() {
+        if (size <= 0) {
+            return false;
+        }
+        if (grid == null) {
+            return false;
+        }
+        if (grid.length != size) {
+            return false;
+        }
+        if (score < 0) {
+            return false;
+        }
+
+        for (int r = 0; r < size; r++) {
+            if (grid[r] == null || grid[r].length != size) {
+                return false;
+            }
+            for (int c = 0; c < size; c++) {
+                Cell cell = grid[r][c];
+                if (cell == null || !cell.repOK()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
