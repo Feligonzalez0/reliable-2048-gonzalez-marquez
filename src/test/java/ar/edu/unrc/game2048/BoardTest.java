@@ -33,7 +33,9 @@ public class BoardTest {
     @Test
     public void testBoardCreation2(){
         assertThrows(IllegalArgumentException.class, () -> new Board(-1));
+        assertThrows(IllegalArgumentException.class, () -> new Board(0));
     }
+
 
     @Test
     public void testBoardCreation3(){
@@ -507,19 +509,26 @@ public class BoardTest {
         Board board = new Board(size);
         Cell aux = new Cell(2);
 
-        // Validar límites inferiores
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(-1, 0));
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, -1));
+        Exception e1 = assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(-1, 0));
+        assertEquals("Position (-1, 0) is out of bounds for board size 4", e1.getMessage());
 
-        // Validar límites superiores
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(size, 0));
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, size));
+        // Validar límite inferior de columna
+        Exception e2 = assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, -1));
+        assertEquals("Position (0, -1) is out of bounds for board size 4", e2.getMessage());
 
-        // Validar a través del método setCell
-        assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(-1, 0, aux));
-        assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(0, size, aux));
+        // Validar límite superior de fila
+        Exception e3 = assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(size, 0));
+        assertEquals("Position (4, 0) is out of bounds for board size 4", e3.getMessage());
 
-        // Validar que las coordenadas correctas no lancen excepción (esquinas)
+        Exception e4 = assertThrows(IndexOutOfBoundsException.class, () -> board.getCell(0, size));
+        assertEquals("Position (0, 4) is out of bounds for board size 4", e4.getMessage());
+
+        Exception e5 = assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(-1, 0, aux));
+        assertEquals("Position (-1, 0) is out of bounds for board size 4", e5.getMessage());
+
+        Exception e6 = assertThrows(IndexOutOfBoundsException.class, () -> board.setCell(0, size, aux));
+        assertEquals("Position (0, 4) is out of bounds for board size 4", e6.getMessage());
+
         assertDoesNotThrow(() -> {
             board.getCell(0, 0);
             board.getCell(size - 1, size - 1);
