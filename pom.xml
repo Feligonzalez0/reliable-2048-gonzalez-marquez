@@ -17,6 +17,13 @@
     </properties>
 
     <dependencies>
+        <!-- JUnit 4 para soportar pruebas generadas por Randoop -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
         <!-- JUnit 5 API and Engine -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
