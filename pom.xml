@@ -32,15 +32,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Optional: AssertJ for fluent assertions -->
@@ -105,7 +105,7 @@
                         <param>ar.edu.unrc.game2048.*</param>
                     </targetClasses>
                     <targetTests>
-                        <param>ar.edu.unrc.game2048.*</param>
+                        <param>randoopTests.*</param>
                     </targetTests>
                 </configuration>
                 <dependencies>
