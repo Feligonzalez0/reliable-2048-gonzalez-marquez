@@ -41,24 +41,31 @@ public class Board {
      */
     private int score;
 
+    private final Random rng;
+
     /**
      * Creates a new board of the default size (4x4) with two random tiles.
      */
     public Board() {
-        this(DEFAULT_SIZE);
+        this(DEFAULT_SIZE, new Random());
     }
 
+
+    public Board(int size) {
+        this(size, new Random());
+    }
     /**
      * Creates a new board of the specified size with two random tiles.
      *
      * @param size the board size (must be > 0)
      * @throws IllegalArgumentException if size <= 0
      */
-    public Board(int size) {
+    public Board(int size, Random rng) {
         if (size <= 0) {
             throw new IllegalArgumentException("Board size must be positive: " + size);
         }
         this.size = size;
+        this.rng = Objects.requireNonNull(rng);
         this.grid = new Cell[size][size];
         this.score = 0;
         initializeEmpty();
@@ -74,13 +81,12 @@ public class Board {
      */
     public Board(Board other) {
         this.size = other.size;
+        this.rng = other.rng;
         this.grid = new Cell[size][size];
         this.score = other.score;
-        for (int r = 0; r < size; r++) {
-            for (int c = 0; c < size; c++) {
+        for (int r = 0; r < size; r++)
+            for (int c = 0; c < size; c++)
                 this.grid[r][c] = other.grid[r][c];
-            }
-        }
         assert repOK();
     }
 
@@ -166,14 +172,11 @@ public class Board {
      * @return a set of positions of all empty cells
      */
     public Set<Position> getEmptyPositions() {
-        Set<Position> empty = new HashSet<>();
-        for (int r = 0; r < size; r++) {
-            for (int c = 0; c < size; c++) {
-                if (grid[r][c].isEmpty()) {
+        Set<Position> empty = new LinkedHashSet<>(); // en vez de HashSet
+        for (int r = 0; r < size; r++)
+            for (int c = 0; c < size; c++)
+                if (grid[r][c].isEmpty())
                     empty.add(new Position(r, c));
-                }
-            }
-        }
         return empty;
     }
 
@@ -367,18 +370,11 @@ public class Board {
      */
     private boolean addRandomTile() {
         Set<Position> empty = getEmptyPositions();
-        if (empty.isEmpty()) {
-            return false;
-        }
-
-        // Choose random position
-        int randomIndex = (int) (Math.random() * empty.size());
+        if (empty.isEmpty()) return false;
+        int randomIndex = rng.nextInt(empty.size());
         Position pos = empty.stream().skip(randomIndex).findFirst().get();
-
-        // 90% chance of 2, 10% chance of 4 (standard 2048 rules)
-        int value = Math.random() < 0.9 ? 2 : 4;
+        int value = rng.nextDouble() < 0.9 ? 2 : 4;
         grid[pos.row][pos.col] = new Cell(value);
-
         return true;
     }
 
