@@ -1,2 +1,0 @@
-ar.edu.unrc.game2048.Board
-java.util.Random : new java.util.Random(42L)

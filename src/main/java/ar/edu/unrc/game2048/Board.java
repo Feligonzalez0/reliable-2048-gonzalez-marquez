@@ -41,18 +41,13 @@ public class Board {
      */
     private int score;
 
-    private final Random rng;
+    private static final Random RNG = new Random(42L);
 
     /**
      * Creates a new board of the default size (4x4) with two random tiles.
      */
     public Board() {
-        this(DEFAULT_SIZE, new Random());
-    }
-
-
-    public Board(int size) {
-        this(size, new Random());
+        this(DEFAULT_SIZE);
     }
     /**
      * Creates a new board of the specified size with two random tiles.
@@ -60,12 +55,11 @@ public class Board {
      * @param size the board size (must be > 0)
      * @throws IllegalArgumentException if size <= 0
      */
-    public Board(int size, Random rng) {
+    public Board(int size) {
         if (size <= 0) {
             throw new IllegalArgumentException("Board size must be positive: " + size);
         }
         this.size = size;
-        this.rng = Objects.requireNonNull(rng);
         this.grid = new Cell[size][size];
         this.score = 0;
         initializeEmpty();
@@ -81,7 +75,6 @@ public class Board {
      */
     public Board(Board other) {
         this.size = other.size;
-        this.rng = other.rng;
         this.grid = new Cell[size][size];
         this.score = other.score;
         for (int r = 0; r < size; r++)
@@ -172,7 +165,7 @@ public class Board {
      * @return a set of positions of all empty cells
      */
     public Set<Position> getEmptyPositions() {
-        Set<Position> empty = new LinkedHashSet<>(); // en vez de HashSet
+        Set<Position> empty = new LinkedHashSet<>();
         for (int r = 0; r < size; r++)
             for (int c = 0; c < size; c++)
                 if (grid[r][c].isEmpty())
@@ -371,9 +364,9 @@ public class Board {
     private boolean addRandomTile() {
         Set<Position> empty = getEmptyPositions();
         if (empty.isEmpty()) return false;
-        int randomIndex = rng.nextInt(empty.size());
+        int randomIndex = RNG.nextInt(empty.size());
         Position pos = empty.stream().skip(randomIndex).findFirst().get();
-        int value = rng.nextDouble() < 0.9 ? 2 : 4;
+        int value = RNG.nextDouble() < 0.9 ? 2 : 4;
         grid[pos.row][pos.col] = new Cell(value);
         return true;
     }

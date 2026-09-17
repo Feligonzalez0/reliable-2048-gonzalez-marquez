@@ -22,12 +22,23 @@ Paquete: ar.edu.unrc.game2048
 | Board.Direction | 100% | n/a | 0 de 1 | 0 |
 | MainCLI | 0% | 0% | 4 de 4 | 1 |
 
-## Análisis de mutaciones (PITest)
+## Cobertura de Mutaciones (PIT) — con RepOK
 
-No fue posible generar el reporte de PITest para esta versión con el mismo formato que el anterior.
+### Resumen general
 
-PITest exige que la suite de tests no tenga fallas al momento de correr el análisis de mutaciones (si un test falla contra el código original, sin mutar, PITest aborta la ejecución). Los tests generados por Randoop usan nombres de métodos aleatorios que cambian en cada corrida de la herramienta, por lo que no se puede fijar un conjunto estable de tests para ejecutar contra PITest de la misma manera reproducible que se hizo en los reportes anteriores. Esto impidió obtener un resultado de Line Coverage / Mutation Coverage / Test Strength comparable al de los reportes previos.
->Nota: En el anterior informe tuvimos suerte y pudimos hacerlo con pitest luego de varios intentos.
+- Cobertura de líneas: 77% (190 de 248; 58 missed).
+- Cobertura de mutaciones: 73% (160 de 220; 60 missed).
+- Test Strength: 90% (160 de 177).
+- Clases: 3.
+
+### Por clase
+
+| Clase         | Cov. Líneas | Cov. Mutaciones | Test Strength |
+|---------------|-------------|------------------|----------------|
+| Board         | 91% (165/181) | 79% (131/165) | 90% (131/146) |
+| Cell          | 93% (25/27)   | 85% (29/34)   | 94% (29/31)   |
+| MainCLI       | 0% (0/40)     | 0% (0/21)     | 100% (0/0)    |
+
 ## Comparativa: Randoop (sin RepOK) vs Randoop (con RepOK)
 
 ### Cobertura de código (JaCoCo)
@@ -68,8 +79,8 @@ PITest exige que la suite de tests no tenga fallas al momento de correr el anál
 
 ### Análisis de mutaciones (PITest)
 | Métrica | Fase 2 (Manual) | Randoop (sin RepOK) | Randoop (con RepOK) |
-|---|---|---|---|
-| Line Coverage | 82% | 64% | No disponible* |
-| Mutation Coverage | 84% | 49% | No disponible* |
-| Test Strength | 94% | 77% | No disponible* |
+|---|---|---|---------------------|
+| Line Coverage | 82% | 64% | 77%                 |
+| Mutation Coverage | 84% | 49% | 73%                 |
+| Test Strength | 94% | 77% | 90%                 |
 
