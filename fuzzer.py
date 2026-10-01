@@ -109,20 +109,16 @@ class RandomFuzzer(Fuzzer):
         self.max_length = max_length
 
     def fuzz(self) -> str:
-        """
-        TODO: Implement this method.
+        length = random.randint(self.min_length, self.max_length)
+        result = ""
+        
+        for i in range (0, length, 1):
+            result += random.choice(KEYS) + "\n"
+        
+        result += "q\n"
 
-        Return a string representing a sequence of moves for the 2048 CLI.
-        Each key must be on its own line (followed by '\\n').
-        The sequence must end with the quit key ('q') on its own line.
-
-        Use `self.min_length` and `self.max_length` to decide how many moves
-        to generate, and pick keys randomly from the KEYS list.
-
-        Example output for a sequence of 3 moves:
-            'w\\na\\nd\\nq\\n'
-        """
-        raise NotImplementedError
+        return result
+            
 
 # ---------------------------------------------------------------------------
 # Main: run the fuzzer and report results
@@ -130,9 +126,9 @@ class RandomFuzzer(Fuzzer):
 
 def main():
     runner = CLIRunner()
-    fuzzer = RandomFuzzer(min_length=10, max_length=50)
+    fuzzer = RandomFuzzer(min_length=20, max_length=50)
 
-    trials = 20
+    trials = 50
     outcomes = {PASS: 0, FAIL: 0, UNRESOLVED: 0}
 
     print(f"Running {trials} fuzzing trials...\n")
