@@ -535,4 +535,115 @@ public class BoardTest {
             board.setCell(0, 0, aux);
         });
     }
+
+    @Test
+    public void testCopyBoardIsIndependent() {
+        Board original = new Board(4);
+        resetBoard(original);
+        original.setCell(0, 0, new Cell(8));
+
+        Board copy = new Board(original);
+        copy.setCell(0, 0, new Cell(16));
+
+        assertEquals(8, original.getCell(0, 0).getValue());
+        assertEquals(16, copy.getCell(0, 0).getValue());
+    }
+
+    
+    @Test
+    public void testInvalidMovePreservesBoard() {
+        Board board = new Board(4);
+        resetBoard(board);
+        board.setCell(0, 0, new Cell(2));
+        board.setCell(2, 0, new Cell(4));
+
+        Board before = new Board(board);
+        int scoreBefore = board.getScore();
+
+        assertFalse(board.move(Direction.LEFT));
+
+        assertEquals(before, board);
+        assertEquals(scoreBefore, board.getScore());
+    }
+
+    @Test
+    public void testMultipleMergesInOneMove() {
+        Board board = new Board(4);
+        resetBoard(board);
+
+        board.setCell(0, 0, new Cell(2));
+        board.setCell(0, 1, new Cell(2));
+        board.setCell(0, 2, new Cell(4));
+        board.setCell(0, 3, new Cell(4));
+
+        assertTrue(board.move(Direction.LEFT));
+
+        assertEquals(4, board.getCell(0, 0).getValue());
+        assertEquals(8, board.getCell(0, 1).getValue());
+        assertEquals(12, board.getScore());
+    }
+
+    @Test
+    public void testMultipleVerticalMerges() {
+        Board board = new Board(4);
+        resetBoard(board);
+
+        board.setCell(0, 0, new Cell(2));
+        board.setCell(1, 0, new Cell(2));
+        board.setCell(2, 0, new Cell(4));
+        board.setCell(3, 0, new Cell(4));
+
+        assertTrue(board.move(Direction.UP));
+
+        assertEquals(4, board.getCell(0, 0).getValue());
+        assertEquals(8, board.getCell(1, 0).getValue());
+        assertEquals(12, board.getScore());
+    }
+
+    @Test
+    public void testEmptyBoardProperties() {
+        Board board = new Board(4);
+        resetBoard(board);
+
+        assertTrue(board.hasEmptyCells());
+        assertFalse(board.isFull());
+        assertEquals(16, board.getEmptyPositions().size());
+    }
+
+    @Test
+    public void testSetCellUpdatesEmptyPositions() {
+        Board board = new Board(4);
+        resetBoard(board);
+
+        int initialEmptyPositions = board.getEmptyPositions().size();
+
+        board.setCell(1, 2, new Cell(8));
+
+        assertEquals(initialEmptyPositions - 1,
+                    board.getEmptyPositions().size());
+
+        board.setCell(1, 2, new Cell(0));
+
+        assertEquals(initialEmptyPositions,
+                    board.getEmptyPositions().size());
+    }
+
+    @Test
+    public void testWinningBoardAfterMerge() {
+        Board board = new Board(4);
+        resetBoard(board);
+
+        int halfWinningValue = Board.WINNING_VALUE / 2;
+
+        board.setCell(0, 0, new Cell(halfWinningValue));
+        board.setCell(0, 1, new Cell(halfWinningValue));
+
+        assertFalse(board.isWinningBoard());
+
+        assertTrue(board.move(Direction.LEFT));
+
+        assertTrue(board.isWinningBoard());
+        assertEquals(Board.WINNING_VALUE, board.getCell(0, 0).getValue());
+    }
+
 }

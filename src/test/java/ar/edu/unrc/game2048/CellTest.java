@@ -133,7 +133,116 @@ public class CellTest {
         assertEquals(cell1.toString(), ".");
     }
 
+        @Test
+    public void testCellZeroIsValid() {
+        Cell cell = new Cell(0);
+        assertEquals(0, cell.getValue());
+        assertTrue(cell.isEmpty());
+    }
 
+    @Test
+    public void testCellNegativeValuesAreInvalid() {
+        assertThrows(IllegalArgumentException.class, () -> new Cell(-2));
+        assertThrows(IllegalArgumentException.class, () -> new Cell(-16));
+    }
 
+    @Test
+    public void testCellLargePowerOfTwo() {
+        Cell cell = new Cell(1024);
+        assertEquals(1024, cell.getValue());
+        assertFalse(cell.isEmpty());
+    }
 
+    @Test
+    public void testCanMergeWithNull() {
+        Cell cell = new Cell(8);
+        assertFalse(cell.canMergeWith(null));
+    }
+
+    @Test
+    public void testCanMergeWithSameValueDifferentCells() {
+        Cell cell1 = new Cell(8);
+        Cell cell2 = new Cell(8);
+
+        assertTrue(cell1.canMergeWith(cell2));
+    }
+
+    @Test
+    public void testCanMergeDifferentPowersOfTwo() {
+        Cell cell1 = new Cell(8);
+        Cell cell2 = new Cell(16);
+
+        assertFalse(cell1.canMergeWith(cell2));
+    }
+
+    @Test
+    public void testMergeWithNull() {
+        Cell cell = new Cell(8);
+
+        assertThrows(IllegalArgumentException.class, () -> cell.mergeWith(null));
+    }
+
+    @Test
+    public void testMergeWithEqualCellsProducesDoubleValue() {
+        Cell cell1 = new Cell(8);
+        Cell cell2 = new Cell(8);
+
+        Cell result = cell1.mergeWith(cell2);
+
+        assertEquals(new Cell(16), result);
+    }
+
+    @Test
+    public void testMergeDoesNotModifyOriginalCells() {
+        Cell cell1 = new Cell(16);
+        Cell cell2 = new Cell(16);
+
+        cell1.mergeWith(cell2);
+
+        assertEquals(16, cell1.getValue());
+        assertEquals(16, cell2.getValue());
+    }
+
+    @Test
+    public void testEqualsIsSymmetric() {
+        Cell cell1 = new Cell(16);
+        Cell cell2 = new Cell(16);
+
+        assertTrue(cell1.equals(cell2));
+        assertTrue(cell2.equals(cell1));
+    }
+
+    @Test
+    public void testEqualsIsTransitive() {
+        Cell cell1 = new Cell(32);
+        Cell cell2 = new Cell(32);
+        Cell cell3 = new Cell(32);
+
+        assertTrue(cell1.equals(cell2));
+        assertTrue(cell2.equals(cell3));
+        assertTrue(cell1.equals(cell3));
+    }
+
+    @Test
+    public void testEqualsWithDifferentValues() {
+        Cell cell1 = new Cell(8);
+        Cell cell2 = new Cell(16);
+
+        assertNotEquals(cell1, cell2);
+    }
+
+    @Test
+    public void testEqualCellsHaveEqualHashCodes() {
+        Cell cell1 = new Cell(64);
+        Cell cell2 = new Cell(64);
+
+        assertEquals(cell1.hashCode(), cell2.hashCode());
+    }
+
+    @Test
+    public void testToStringForDifferentValues() {
+        assertEquals("2", new Cell(2).toString());
+        assertEquals("128", new Cell(128).toString());
+        assertEquals(".", new Cell(0).toString());
+    }
 }
