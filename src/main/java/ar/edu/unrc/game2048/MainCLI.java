@@ -1,5 +1,6 @@
 package ar.edu.unrc.game2048;
 
+import java.util.Random;
 import java.util.Scanner;
 
 import ar.edu.unrc.game2048.Board.Direction;
@@ -15,7 +16,7 @@ public class MainCLI {
     private final Scanner scanner;
     
     public MainCLI() {
-        this.board = new Board();
+        this.board = new Board((int) (Math.random() * (10 - 4 + 1)) + 4);
         this.scanner = new Scanner(System.in);
     }
     
