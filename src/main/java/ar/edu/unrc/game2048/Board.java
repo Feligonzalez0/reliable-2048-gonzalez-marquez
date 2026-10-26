@@ -25,7 +25,6 @@ public class Board {
      * Default winning value: when board contains this value, the player wins (2048)
      */
     public static final int WINNING_VALUE = 2048;
-
     /**
      * Board size (i.e., number of rows and columns). Must be > 0.
      */
@@ -35,7 +34,6 @@ public class Board {
      * Contents of the board: a 2D array of Cells. grid[row][col] represents the cell at (row, col).
      */
     private final Cell[][] grid;
-
     /**
      * Game accumulated score.
      */
@@ -67,7 +65,6 @@ public class Board {
         addRandomTile();
         assert repOK();
     }
-
     /**
      * Copy constructor - creates a deep copy of another board.
      *
