@@ -14,9 +14,14 @@ import ar.edu.unrc.game2048.Board.Direction;
 public class MainCLI {
     private final Board board;
     private final Scanner scanner;
-    
+
     public MainCLI() {
         this.board = new Board((int) (Math.random() * (10 - 4 + 1)) + 4);
+        this.scanner = new Scanner(System.in);
+    }
+
+    public MainCLI(Board board) {
+        this.board = board;
         this.scanner = new Scanner(System.in);
     }
     
@@ -83,7 +88,12 @@ public class MainCLI {
     }
     
     public static void main(String[] args) {
-        MainCLI game = new MainCLI();
+        MainCLI game;
+        if (args.length > 0) {
+            game = new MainCLI(new Board(args[0]));
+        } else {
+            game = new MainCLI();
+        }
         game.play();
     }
 }

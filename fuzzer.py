@@ -118,7 +118,24 @@ class RandomFuzzer(Fuzzer):
         result += "q\n"
 
         return result
-            
+
+# ---------------------------------------------------------------------------
+# BoardFuzzer (grammar-based)
+# ---------------------------------------------------------------------------
+# Grammar:
+#   <tablero> ::= "[" <celdas> "]"
+#   <celdas> ::= <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda> "," <celda>
+#   <celda> ::= "0" | "2" | "4" | "8" | "16" | "32" | "64" | "128" | "256" | "512" | "1024" | "2048"
+
+VALORES = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+def generar_tablero() -> str:
+     tablero = "["
+     for i in range(16):
+         tablero = tablero + str(random.choice(VALORES))
+         if i < 15:
+             tablero = tablero + ","
+     tablero = tablero + "]"
+     return tablero
 
 # ---------------------------------------------------------------------------
 # Main: run the fuzzer and report results
@@ -134,6 +151,8 @@ def main():
     print(f"Running {trials} fuzzing trials...\n")
 
     for i in range(trials):
+        tablero = generar_tablero()
+        runner.COMMAND = CLIRunner.COMMAND + [tablero]
         inp = fuzzer.fuzz()
         result, outcome = runner.run(inp)
 
