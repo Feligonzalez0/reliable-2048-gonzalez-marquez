@@ -84,6 +84,54 @@ public class Board {
     }
 
     /**
+     * Constructor para comenzar con un tablero inicial dado como un string,
+     *
+     * @param string el tablero dado como string. 
+     * Los valores deben estar separados por comas. Ej: "[0,0,0,0,4,2,0,0,0,0,0,0,2,2,2,2]"
+     */
+    public Board(String string) {
+        // Eliminamos corchetes y espacios.
+        string = string.replace("[", "")
+                    .replace("]", "")
+                    .replace(" ", "");
+
+        // Separamos los valores.
+        String[] values = string.split(",");
+
+        // Calculamos el tamaño del tablero.
+        this.size = raizSuperior(values.length);
+
+        this.grid = new Cell[size][size];
+        this.score = 0;
+
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+
+                int index = r * size + c;
+
+                int value = 0;
+
+                if (index < values.length) {
+                    value = Integer.parseInt(values[index]);
+                }
+
+                this.grid[r][c] = new Cell(value);
+            }
+        }
+
+        assert repOK();
+    }
+
+    // Metodo auxiliar
+    private static int raizSuperior(int numero) {
+        if (numero <= 0) {
+            return 0; // Manejo de números menores o iguales a cero
+        }
+        // Calculamos la raíz y la redondeamos siempre hacia arriba
+        return (int) Math.ceil(Math.sqrt(numero));
+    }
+
+    /**
      * Initializes the board with all EMPTY cells.
      */
     private void initializeEmpty() {

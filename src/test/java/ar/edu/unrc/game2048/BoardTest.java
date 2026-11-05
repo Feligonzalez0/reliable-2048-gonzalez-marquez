@@ -3,6 +3,7 @@ package ar.edu.unrc.game2048;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -646,4 +647,82 @@ public class BoardTest {
         assertEquals(Board.WINNING_VALUE, board.getCell(0, 0).getValue());
     }
 
+        @Test
+    void testConstructorWithDefaultBoardSize() {
+        Board board = new Board("[0,0,0,0,4,2,0,0,0,0,0,0,2,2,2,2]");
+
+        assertEquals(4, board.getSize());
+
+        assertEquals(0, board.getCell(0, 0).getValue());
+        assertEquals(4, board.getCell(1, 0).getValue());
+        assertEquals(2, board.getCell(1, 1).getValue());
+        assertEquals(2, board.getCell(3, 0).getValue());
+        assertEquals(2, board.getCell(3, 3).getValue());
+    }
+
+    @Test
+    void testConstructorWithMultiDigitValues() {
+        Board board = new Board("[16,32,64,128,256,512,1024,2048]");
+
+        assertEquals(3, board.getSize());
+
+        assertEquals(16, board.getCell(0, 0).getValue());
+        assertEquals(32, board.getCell(0, 1).getValue());
+        assertEquals(64, board.getCell(0, 2).getValue());
+        assertEquals(128, board.getCell(1, 0).getValue());
+        assertEquals(256, board.getCell(1, 1).getValue());
+        assertEquals(512, board.getCell(1, 2).getValue());
+        assertEquals(1024, board.getCell(2, 0).getValue());
+        assertEquals(2048, board.getCell(2, 1).getValue());
+
+        // La última posición se completa con cero.
+        assertEquals(0, board.getCell(2, 2).getValue());
+    }
+
+    @Test
+    void testConstructorWithNonPerfectSquareNumberOfValues() {
+        Board board = new Board("[2, 4, 8, 16, 32]");
+
+        // 5 elementos requieren un tablero de 3x3.
+        assertEquals(3, board.getSize());
+
+        assertEquals(2, board.getCell(0, 0).getValue());
+        assertEquals(4, board.getCell(0, 1).getValue());
+        assertEquals(8, board.getCell(0, 2).getValue());
+        assertEquals(16, board.getCell(1, 0).getValue());
+        assertEquals(32, board.getCell(1, 1).getValue());
+
+        // Las posiciones restantes deben ser cero.
+        assertEquals(0, board.getCell(1, 2).getValue());
+        assertEquals(0, board.getCell(2, 0).getValue());
+        assertEquals(0, board.getCell(2, 1).getValue());
+        assertEquals(0, board.getCell(2, 2).getValue());
+    }
+
+    @Test
+    void testConstructorWithSingleValue() {
+        Board board = new Board("[2048]");
+
+        assertEquals(1, board.getSize());
+        assertEquals(2048, board.getCell(0, 0).getValue());
+        assertTrue(board.isWinningBoard());
+    }
+
+    @Test
+    void testAllCellsAreInitialized() {
+        Board board = new Board("[2,4,8,16,32]");
+
+        for (int r = 0; r < board.getSize(); r++) {
+            for (int c = 0; c < board.getSize(); c++) {
+                assertNotNull(board.getCell(r, c));
+            }
+        }
+    }
+
+    @Test
+    void testStringLosingBoard(){
+        Board board = new Board("2,4,2,4,4,2,4,2,2,4,2,4,4,2,4,2");
+        
+        assertTrue(board.isLosingBoard());
+    }
 }
