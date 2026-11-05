@@ -128,15 +128,11 @@ class RandomFuzzer(Fuzzer):
 #   <celda> ::= "0" | "2" | "4" | "8" | "16" | "32" | "64" | "128" | "256" | "512" | "1024" | "2048"
 
 VALORES = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-def generar_tablero() -> str:
-     tablero = "["
-     for i in range(16):
-         tablero = tablero + str(random.choice(VALORES))
-         if i < 15:
-             tablero = tablero + ","
-     tablero = tablero + "]"
-     return tablero
+PESOS = [40, 25, 15, 8, 5, 3, 2, 1, 0.5, 0.3, 0.15, 0.05]
 
+def generar_tablero() -> str:
+    celdas = random.choices(VALORES, weights=PESOS, k=16)
+    return str(celdas)
 # ---------------------------------------------------------------------------
 # Main: run the fuzzer and report results
 # ---------------------------------------------------------------------------
