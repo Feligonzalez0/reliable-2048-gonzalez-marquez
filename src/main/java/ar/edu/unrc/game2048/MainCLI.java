@@ -14,6 +14,7 @@ import ar.edu.unrc.game2048.Board.Direction;
 public class MainCLI {
     private final Board board;
     private final Scanner scanner;
+    public static final int EXIT_INVALID_BOARD = 2; // exit code de tablero inválido
 
     public MainCLI() {
         this.board = new Board((int) (Math.random() * (10 - 4 + 1)) + 4);
@@ -90,7 +91,13 @@ public class MainCLI {
     public static void main(String[] args) {
         MainCLI game;
         if (args.length > 0) {
-            game = new MainCLI(new Board(args[0]));
+            try {
+                game = new MainCLI(new Board(args[0]));
+            } catch (IllegalArgumentException e) {
+                System.err.println("Invalid board: " + e.getMessage());
+                System.exit(EXIT_INVALID_BOARD);
+                return;
+            }
         } else {
             game = new MainCLI();
         }

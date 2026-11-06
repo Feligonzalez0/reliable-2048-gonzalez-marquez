@@ -25,7 +25,8 @@ public final class Cell {
      * The empty cell singleton (value = 0).
      */
     public static final Cell EMPTY = new Cell(0);
-    
+    public static final int MAX_VALUE = 1 << 30;
+
     /**
      * Creates a new cell with the given value.
      * 
@@ -75,6 +76,11 @@ public final class Cell {
         if (this.isEmpty() && other.isEmpty()) {
             return false;
         }
+
+        if (this.value == MAX_VALUE) {
+            return false; // merging would overflow int
+        }
+        
         return this.value == other.value;
     }
     

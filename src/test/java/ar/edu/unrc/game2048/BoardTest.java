@@ -3,6 +3,7 @@ package ar.edu.unrc.game2048;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -725,4 +726,33 @@ public class BoardTest {
         
         assertTrue(board.isLosingBoard());
     }
+
+    private static final String[] INVALID = {
+        "",                       // string vacio
+        "[]",                     // sin celdas
+        "[2,,4,8]",               // celda vacia
+        "[2,4,8,16,]",            // coma sobrante
+        "[,2,4,8]",               // coma sobrante
+        "[2,x,4,8]",              // elemento no es un numero
+        "[2,3,4,8]",              // no es potencia de 2
+        "[2,-2,4,8]",             // negativo
+        "[2,4,8,16] basura",      // basura
+    };
+ 
+    @Test
+    void invalidStringsAreRejectedWithAClearIllegalArgumentException() {
+        for (String s : INVALID) {
+            IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> new Board(s), "input: [" + s + "]");
+            // NumberFormatException is an IllegalArgumentException too, but its
+            // message is not meaningful for the user: it must have been wrapped.
+            assertNotEquals(NumberFormatException.class, e.getClass(), "input: [" + s + "]");
+        }
+    }
+ 
+    @Test
+    void nullStringIsRejected() {
+        assertThrows(IllegalArgumentException.class, () -> new Board((String) null));
+    }
+
 }

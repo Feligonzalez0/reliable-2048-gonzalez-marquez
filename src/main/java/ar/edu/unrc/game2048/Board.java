@@ -87,36 +87,80 @@ public class Board {
      * Los valores deben estar separados por comas. Ej: "[0,0,0,0,4,2,0,0,0,0,0,0,2,2,2,2]"
      */
     public Board(String string) {
-        // Eliminamos corchetes y espacios.
-        string = string.replace("[", "")
-                    .replace("]", "")
-                    .replace(" ", "");
+        int[] values = parseValues(string);
 
-        // Separamos los valores.
-        String[] values = string.split(",");
-
-        // Calculamos el tamaño del tablero.
         this.size = raizSuperior(values.length);
-
         this.grid = new Cell[size][size];
         this.score = 0;
 
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
-
                 int index = r * size + c;
+                int value = index < values.length ? values[index] : 0;
+                this.grid[r][c] = new Cell(value); // IAE si no es potencia de dos
+            }
+        }
+        assert repOK();
+    }
 
-                int value = 0;
+    private static int[] parseValues(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("String no puede ser nulo.");
+        }
 
-                if (index < values.length) {
-                    value = Integer.parseInt(values[index]);
-                }
+        boolean open = s.startsWith("[");
+        boolean close = s.endsWith("]");
+        if (open != close) {
+            throw new IllegalArgumentException("Corchetes desbalanceados");
+        }
+        String body = open ? s.substring(1, s.length() - 1) : s;
+        int n = body.length();
 
-                this.grid[r][c] = new Cell(value);
+        List<Integer> values = new ArrayList<>();
+        int i = 0;
+        while (true) {
+            int start = i;
+            while (i < n && body.charAt(i) >= '0' && body.charAt(i) <= '9') {
+                i++;
+            }
+
+            if (i == start) {
+                throw new IllegalArgumentException("Se esperaba un numero en la posicion " + start);
+            }
+            
+            String token = body.substring(start, i);
+            if (token.length() > 1 && token.charAt(0) == '0') {
+                throw new IllegalArgumentException("No se permiten ceros iniciales: " + token);
+            }
+
+            try {
+                values.add(Integer.parseInt(token));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Valor de celda fuera de rango: " + token);
+            }
+
+            if (i == n) {
+                break;
+            }
+
+            if (body.charAt(i) != ',') {
+                throw new IllegalArgumentException(
+                        "Se esperaba ',' en la posicion " + i);
+            }
+            
+            i++;
+
+            // saltear espacios
+            while (i < n && body.charAt(i) == ' ') {
+                i++;
             }
         }
 
-        assert repOK();
+        int[] result = new int[values.size()];
+        for (int k = 0; k < result.length; k++) {
+            result[k] = values.get(k);
+        }
+        return result;
     }
 
     // Metodo auxiliar
