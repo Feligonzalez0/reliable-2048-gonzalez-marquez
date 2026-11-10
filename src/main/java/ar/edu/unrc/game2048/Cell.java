@@ -98,7 +98,12 @@ public final class Cell {
                 "Cannot merge cells: " + this + " and " + other
             );
         }
-        return new Cell(this.value * 2);
+        Cell result = new Cell(this.value * 2);
+
+        // contrato daikon (postcondicion inferida)
+        assert result.getValue() == 2 * this.value : "El valor fusionado debe duplicar al original";
+
+        return result;
     }
 
     /**

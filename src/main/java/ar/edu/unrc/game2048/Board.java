@@ -336,24 +336,45 @@ public class Board {
     *
     * @return true if the board changed, false otherwise
     */
-    public boolean move(Direction direction){
-        Board previous = new Board(this);
+public boolean move(Direction direction){
+    Board previous = new Board(this);
+    int oldScore = this.score;
 
-        for (int i = 0; i < this.size; i++){
-            List<Cell> line = getLine(i, direction);
-            List<Cell> processed = processLine(line);
-            setLine(i, direction, processed);
-        }
+    int oldSum = 0;
+    for (int r = 0; r < size; r++)
+        for (int c = 0; c < size; c++)
+            oldSum += grid[r][c].getValue();
 
-        boolean moved = !this.equals(previous);
-
-        if (moved) {
-            addRandomTile(); // Add new random tile after successful move
-        }
-        assert repOK();
-        return moved;
-
+    for (int i = 0; i < this.size; i++){
+        List<Cell> line = getLine(i, direction);
+        List<Cell> processed = processLine(line);
+        setLine(i, direction, processed);
     }
+
+    boolean moved = !this.equals(previous);
+
+    if (moved) {
+        addRandomTile();
+    }
+    assert repOK();
+
+    int newSum = 0;
+    for (int r = 0; r < size; r++)
+        for (int c = 0; c < size; c++)
+            newSum += grid[r][c].getValue();
+
+    assert this.score >= oldScore : "el puntaje no puede disminuir";
+
+    if (!moved) {
+        assert this.score == oldScore && this.equals(previous) :
+            "Si no hubo movimiento el tablero y score deben quedar intactos";
+    } else {
+        int diferencia = newSum - oldSum;
+        assert diferencia == 2 || diferencia == 4 :
+            "si hubo movimiento la suma de valores solo puede aumentar por la ficha nueva (2 o 4), pero aumentó: " + diferencia;
+    }
+    return moved;
+}
 
     private List<Cell> getLine(int index, Direction direction){
         List<Cell> line = new ArrayList<>();
